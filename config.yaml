@@ -1,0 +1,11 @@
+credentials:
+  usernames:
+    Group8:
+      email: "group8@example.com"
+      name: "Group8"
+      password: "Group8password"
+
+cookie:
+  name: "churn_app_cookie"
+  key: "some_random_secret_key_123"
+  expiry_days: 1
