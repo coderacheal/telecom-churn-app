@@ -42,8 +42,6 @@ authentication_status = st.session_state.get("authentication_status", None)
 name = st.session_state.get("name", None)
 username = st.session_state.get("username", None)
 
-
-
 # LOAD DATA (adjust path if needed)
 def load_data():
     data_path = './data/telecom_churn_v2.csv'
@@ -196,7 +194,7 @@ if authentication_status is True:
                 y="AccountWeeks",
                 color="ChurnLabel",
                 opacity=0.7,
-                trendline="ols",
+                # trendline="ols",
                 title="Monthly Charge vs Tenure (colored by Churn)",
                 labels={
                     "MonthlyCharge": "Monthly Charge ($)",
