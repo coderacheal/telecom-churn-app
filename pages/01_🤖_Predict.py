@@ -88,6 +88,9 @@ class StreamlitApp:
 
         col1, col2 = st.columns(2)
 
+        # --------------------
+        # LEFT COLUMN
+        # --------------------
         with col1:
             input_AccountWeeks = st.number_input(
                 "Account Weeks (tenure with company)",
@@ -137,6 +140,9 @@ class StreamlitApp:
                 help="Total minutes of daytime calling.",
             )
 
+        # --------------------
+        # RIGHT COLUMN
+        # --------------------
         with col2:
             input_DayCalls = st.number_input(
                 "Number of Daytime Calls",
@@ -173,42 +179,45 @@ class StreamlitApp:
                 help="Minutes spent roaming.",
             )
 
-            input_AvgCallDuration = st.number_input(
-                "Avg Call Duration (mins per call)",
-                min_value=0.0,
-                max_value=60.0,
-                value=self.AvgCallDuration,
-                step=0.1,
-                help="Engineered: DayMins / DayCalls",
-            )
+            # ====== AUTO / DERIVED FIELDS ======
+            eps = 1e-6
+            auto_avg_call_duration = input_DayMins / (input_DayCalls + eps)
+            auto_cost_per_usage = input_MonthlyCharge / (input_DayMins + input_RoamMins + eps)
 
-            input_CostPerUsage = st.number_input(
-                "Cost Per Usage ($ per unit)",
-                min_value=0.0,
-                max_value=10.0,
-                value=self.CostPerUsage,
-                step=0.01,
-                help="Engineered cost efficiency feature for this customer.",
+            # show them as read-only inputs
+            st.text_input(
+                "Avg Call Duration (mins per call) - Auto Calculated from User Inputs",
+                value=f"{auto_avg_call_duration:.2f}",
+                help="Engineered: DayMins / DayCalls",
+                disabled=True,
+            )
+            st.text_input(
+                "Cost Per Usage ($ per unit) - Auto Calculated from User Inputs",
+                value=f"{auto_cost_per_usage:.3f}",
+                help="Engineered: MonthlyCharge / (DayMins + RoamMins)",
+                disabled=True,
             )
 
         st.markdown("---")
 
-        formatted_data = StreamlitApp.format_data_for_the_api_call(
-            AccountWeeks=input_AccountWeeks,
+        # build payload EXACTLY like your inference script expects
+        formatted_data = self.format_data_for_the_api_call(
+            AccountWeeks=int(input_AccountWeeks),
             ContractRenewal=int(input_ContractRenewal),
             DataPlan=int(input_DataPlan),
             DataUsage=float(input_DataUsage),
             CustServCalls=int(input_CustServCalls),
             DayMins=float(input_DayMins),
-            DayCalls=float(input_DayCalls),
+            DayCalls=int(input_DayCalls),
             MonthlyCharge=float(input_MonthlyCharge),
             OverageFee=float(input_OverageFee),
             RoamMins=float(input_RoamMins),
-            AvgCallDuration=float(input_AvgCallDuration),
-            CostPerUsage=float(input_CostPerUsage),
+            AvgCallDuration=float(auto_avg_call_duration),
+            CostPerUsage=float(auto_cost_per_usage),
         )
-
+    
         return formatted_data
+    
 
     def call_model_and_display(self, formatted_data: Dict):
         """
@@ -236,7 +245,7 @@ class StreamlitApp:
             pred = predicted_outcomes[0]  # 0 or 1
             churn_label = "Churn" if pred == 1 else "Stay"
 
-            st.subheader("📌 Prediction Result")
+            st.subheader("Prediction Result")
             st.write(
                 f"**Model Prediction:** {'Likely to CHURN ❌' if pred == 1 else 'Likely to STAY ✅'}"
             )

@@ -1,2 +1,2 @@
 timestamp,prediction_raw,prediction_label,AccountWeeks,ContractRenewal,DataPlan,DataUsage,CustServCalls,DayMins,DayCalls,MonthlyCharge,OverageFee,RoamMins,AvgCallDuration,CostPerUsage
-2025-10-29 15:18,0,Stay,40,1,1,5.0,2,250.0,90.0,60.0,5.0,8.0,2.8,0.25
+2025-10-30 21:10,0,Stay,40,1,1,5.0,2,300.0,90,60.0,5.0,8.0,3.333333296296297,0.19480519417271042
