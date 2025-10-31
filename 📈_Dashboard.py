@@ -7,6 +7,12 @@ import plotly.express as px
 import streamlit_authenticator as stauth
 from yaml.loader import SafeLoader
 
+# PAGE CONFIG
+st.set_page_config(
+    page_title="Churn Dashboard",
+    layout="wide",
+    page_icon="📈"
+)
 
 # Load auth config
 with open('./config.yaml') as file:
@@ -36,12 +42,7 @@ authentication_status = st.session_state.get("authentication_status", None)
 name = st.session_state.get("name", None)
 username = st.session_state.get("username", None)
 
-# PAGE CONFIG
-st.set_page_config(
-    page_title="Churn Dashboard",
-    layout="wide",
-    page_icon="📈"
-)
+
 
 # LOAD DATA (adjust path if needed)
 def load_data():
